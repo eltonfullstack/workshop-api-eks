@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workshop-api
+  namespace: workshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workshop-api
+  template:
+    metadata:
+      labels:
+        app: workshop-api
+    spec:
+      containers:
+        - name: workshop-api
+          image: workshop-api-app-minikube:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 200m
+              memory: 512Mi
+          env:
+            - name: NODE_ENV
+              value: development
+            - name: PORT
+              value: "3000"
+            - name: DATABASE_URL
+              value: postgres://postgres:postgres@postgres:5432/workshop_db
+            - name: JWT_SECRET
+              value: secretKey
+            - name: JWT_REFRESH_SECRET
+              value: refreshSecretKey

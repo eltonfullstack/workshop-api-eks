@@ -1,0 +1,108 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id         String   @id @default(uuid()) @map("customer_id")
+  name       String
+  identity   String   @unique
+  personType String   @map("person_type")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  vehicles Vehicle[]
+  orders   ServiceOrder[]
+
+  @@map("customers")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Vehicle {
+  vehicle_id String @id @default(uuid())
+  car_plate  String @unique
+  car        String
+  model      String
+  year       Int
+
+  customerId String   @map("customer_id")
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  ordens ServiceOrder[]
+}
+
+model ServiceOrder {
+  so_id      String   @id @default(uuid())
+  status     String
+  open_date  DateTime @default(now())
+  close_date DateTime?
+  budget     Float
+
+  customerId String   @map("customer_id")
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  vehicle_id String
+  vehicle    Vehicle @relation(fields: [vehicle_id], references: [vehicle_id])
+
+  services SO_Service[]
+  parts    SO_Part[]
+
+  deleted Boolean @default(false)
+}
+
+model Service {
+  service_id  String @id @default(uuid())
+  name        String
+  description String
+  price       Float
+
+  orders SO_Service[]
+}
+
+model SO_Service {
+  so_service_id String @id @default(uuid())
+  quantity      Int
+  total_value   Float
+
+  so_id String
+  order ServiceOrder @relation(fields: [so_id], references: [so_id])
+
+  service_id String
+  service    Service @relation(fields: [service_id], references: [service_id])
+}
+
+model Part {
+  part_id        String @id @default(uuid())
+  name           String @unique
+  description    String
+  stock          Int
+  reserved_stock Int    @default(0)
+  price          Float
+
+  orders SO_Part[]
+}
+
+model SO_Part {
+  so_part_id  String @id @default(uuid())
+  quantity    Int
+  total_value Float
+
+  so_id String
+  order ServiceOrder @relation(fields: [so_id], references: [so_id])
+
+  part_id String
+  part    Part   @relation(fields: [part_id], references: [part_id])
+}

@@ -1,0 +1,35 @@
+node_modules
+dist
+.env
+src/shared/prisma
+coverage
+*.tsbuildinfo
+
+# --------------------------
+# Node.js
+# --------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+
+# --------------------------
+# Terraform
+# --------------------------
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+crash.log
+terraform.tfvars
+terraform.tfvars.json
+override.tf
+override.tf.json
+
+# --------------------------
+# CI/CD cache/temp
+# --------------------------
+.github/workflows/*.bak
+.gitlab-ci.yml.bak
