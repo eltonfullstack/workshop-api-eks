@@ -3,7 +3,7 @@ name: Provision EKS via Terraform
 on:
   push:
     branches:
-      - main  # Quando houver push no main
+      - main  # Workflow dispara no push para main
 
 permissions:
   id-token: write
@@ -22,7 +22,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}  # ARN da Role OIDC
           aws-region: us-east-1
 
       # 3️⃣ Instalar Terraform
@@ -50,13 +50,13 @@ jobs:
       # 8️⃣ Configurar kubectl para o cluster EKS
       - name: Configure kubectl
         run: |
-          aws eks --region us-east-1 update-kubeconfig --name my-eks-cluster
+          aws eks --region us-east-1 update-kubeconfig --name workshop-cluster
 
-      # 9️⃣ Aplicar Service ClusterIP EKS
+      # 9️⃣ Aplicar Service ClusterIP no cluster EKS
       - name: Apply ClusterIP Service
         run: |
           kubectl apply -f k8s/service-api-cluster-ip.yml -n workshop
 
-      # 🔟 Mostrar outputs Terraform
+      # 🔟 Mostrar outputs do Terraform
       - name: Terraform Outputs
         run: terraform -chdir=terraform output
