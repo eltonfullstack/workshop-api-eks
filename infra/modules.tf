@@ -32,7 +32,7 @@ module "node" {
 module "oidc" {
   source    = "./modules/oidc"
   role_name = "github-actions-deploy"
-  
+
   policy_arns = [
     "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
