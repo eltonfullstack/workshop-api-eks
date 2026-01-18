@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: workshop-api
-          image: workshop-api-app-minikube:latest
-          imagePullPolicy: IfNotPresent
+          image: 051826705770.dkr.ecr.us-east-1.amazonaws.com/workshop-eks:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
           resources:
@@ -27,13 +27,33 @@ spec:
               cpu: 200m
               memory: 512Mi
           env:
+            # Variáveis do ConfigMap
             - name: NODE_ENV
-              value: development
+              valueFrom:
+                configMapKeyRef:
+                  name: workshop-api-config
+                  key: NODE_ENV
             - name: PORT
-              value: "3000"
+              valueFrom:
+                configMapKeyRef:
+                  name: workshop-api-config
+                  key: PORT
+
+            # Variáveis do Secret
             - name: DATABASE_URL
-              value: postgres://postgres:postgres@postgres:5432/workshop_db
+              valueFrom:
+                secretKeyRef:
+                  name: workshop-api-secrets
+                  key: DATABASE_URL
             - name: JWT_SECRET
-              value: secretKey
+              valueFrom:
+                secretKeyRef:
+                  name: workshop-api-secrets
+                  key: JWT_SECRET
             - name: JWT_REFRESH_SECRET
-              value: refreshSecretKey
+              valueFrom:
+                secretKeyRef:
+                  name: workshop-api-secrets
+                  key: JWT_REFRESH_SECRET
+      imagePullSecrets:
+        - name: ecr-registry
