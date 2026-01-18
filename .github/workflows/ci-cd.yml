@@ -52,7 +52,7 @@ jobs:
         run: |
           aws eks --region us-east-1 update-kubeconfig --name my-eks-cluster
 
-      # 9️⃣ Aplicar Service ClusterIP
+      # 9️⃣ Aplicar Service ClusterIP EKS
       - name: Apply ClusterIP Service
         run: |
           kubectl apply -f k8s/service-api-cluster-ip.yml -n workshop
