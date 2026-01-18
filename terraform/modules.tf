@@ -29,13 +29,17 @@ module "node" {
 
 }
 
-module "terraform_state" {
-  source = "./modules/s3"
-
-  bucket_name         = "workshop-api-eks"
-  // dynamodb_table_name = "terraform-lock-table" # opcional
-  role_name           = "github-actions-deploy"
+module "s3_policy" {
+  source      = "./modules/s3_policy"
+  bucket_name = "workshop-api-eks"
 }
+/* module "terraform_state" {
+  source      = "./modules/s3"
+  region      = var.region
+  bucket_name = "workshop-api-eks"
+  // dynamodb_table_name = "terraform-lock-table" # opcional
+  role_name = "github-actions-deploy"
+} */
 
 module "oidc" {
   source    = "./modules/oidc"

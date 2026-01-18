@@ -1,7 +1,12 @@
 terraform {
   backend "s3" {
+    bucket = "workshop-api-eks"
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+    // dynamodb_table = "terraform-lock-table"    # (Opcional) tabela DynamoDB para lock
   }
 }
+
 
 provider "aws" {
   default_tags {
