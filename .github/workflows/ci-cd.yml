@@ -22,7 +22,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}  # Role OIDC com permissão para criar EKS
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: us-east-1
 
       # 3️⃣ Instalar Terraform
@@ -47,6 +47,16 @@ jobs:
       - name: Terraform Apply
         run: terraform -chdir=terraform apply -auto-approve tfplan
 
-      # 8️⃣ Mostrar outputs
+      # 8️⃣ Configurar kubectl para o cluster EKS
+      - name: Configure kubectl
+        run: |
+          aws eks --region us-east-1 update-kubeconfig --name my-eks-cluster
+
+      # 9️⃣ Aplicar Service ClusterIP
+      - name: Apply ClusterIP Service
+        run: |
+          kubectl apply -f k8s/service-api-cluster-ip.yml -n workshop
+
+      # 🔟 Mostrar outputs Terraform
       - name: Terraform Outputs
         run: terraform -chdir=terraform output
