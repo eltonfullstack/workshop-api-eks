@@ -39,6 +39,6 @@ module "oidc" {
   ]
 
   github_subjects = [
-    "repo:eltonfullstack/workshop-api-eks:ref:refs/heads/main"
+    "repo:eltonfullstack/workshop-api-eks:*"
   ]
 }
