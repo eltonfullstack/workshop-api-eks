@@ -26,20 +26,7 @@ module "node" {
   desired_size = var.desired_size
   min_size     = var.min_size
   max_size     = var.max_size
-
 }
-
-module "s3_policy" {
-  source      = "./modules/s3_policy"
-  bucket_name = "workshop-api-eks"
-}
-/* module "terraform_state" {
-  source      = "./modules/s3"
-  region      = var.region
-  bucket_name = "workshop-api-eks"
-  // dynamodb_table_name = "terraform-lock-table" # opcional
-  role_name = "github-actions-deploy"
-} */
 
 module "oidc" {
   source    = "./modules/oidc"
@@ -53,4 +40,10 @@ module "oidc" {
   github_subjects = [
     "repo:eltonfullstack/workshop-api-eks:*"
   ]
+}
+
+module "terraform_backend_s3" {
+  source      = "./modules/iam-backend-s3"
+  role_name  = "github-actions-deploy"
+  bucket_name = "workshop-api-eks"
 }
