@@ -29,6 +29,14 @@ module "node" {
 
 }
 
+module "terraform_state" {
+  source = "./modules/s3"
+
+  bucket_name         = "workshop-api-eks"
+  // dynamodb_table_name = "terraform-lock-table" # opcional
+  role_name           = "github-actions-deploy"
+}
+
 module "oidc" {
   source    = "./modules/oidc"
   role_name = "github-actions-deploy"
