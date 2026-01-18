@@ -3,7 +3,7 @@ name: Provision EKS via Terraform
 on:
   push:
     branches:
-      - main  # Workflow dispara no push para main
+      - main
 
 permissions:
   id-token: write
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout do código...
+      # 1️⃣ Checkout do código
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -22,7 +22,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}  # ARN da Role OIDC do GitHub
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: us-east-1
 
       # 3️⃣ Instalar Terraform
@@ -31,21 +31,21 @@ jobs:
         with:
           terraform_version: 1.6.0
 
-      # 4️⃣ Inicializar Terraform
+      # 4️⃣ Inicializar Terraform (backend explícito)
       - name: Terraform Init
-        run: terraform -chdir=terraform init
+        run: terraform -chdir=terraform init -backend-config=dev.aws.tfbackend -input=false
 
       # 5️⃣ Validar Terraform
       - name: Terraform Validate
         run: terraform -chdir=terraform validate
 
-      # 6️⃣ Gerar plano Terraform
+      # 6️⃣ Gerar plano Terraform (não interativo)
       - name: Terraform Plan
-        run: terraform -chdir=terraform plan -out=tfplan
+        run: terraform -chdir=terraform plan -out=tfplan -input=false
 
-      # 7️⃣ Aplicar Terraform
+      # 7️⃣ Aplicar Terraform (não interativo)
       - name: Terraform Apply
-        run: terraform -chdir=terraform apply -auto-approve tfplan
+        run: terraform -chdir=terraform apply -auto-approve -input=false tfplan
 
       # 8️⃣ Configurar kubectl para o cluster EKS
       - name: Configure kubectl
