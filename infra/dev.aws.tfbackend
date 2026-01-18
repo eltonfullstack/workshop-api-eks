@@ -1,0 +1,3 @@
+bucket = "workshop-api-eks"
+key = "workshop-api-eks/terraform.tfstate"
+region = "us-east-1"

@@ -1,0 +1,62 @@
+name: Provision EKS via Terraform
+
+on:
+  push:
+    branches:
+      - main  # Quando houver push no main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout do código
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # 2️⃣ Configurar credenciais AWS via OIDC
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: us-east-1
+
+      # 3️⃣ Instalar Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.6.0
+
+      # 4️⃣ Inicializar Terraform
+      - name: Terraform Init
+        run: terraform -chdir=terraform init
+
+      # 5️⃣ Validar Terraform
+      - name: Terraform Validate
+        run: terraform -chdir=terraform validate
+
+      # 6️⃣ Gerar plano Terraform
+      - name: Terraform Plan
+        run: terraform -chdir=terraform plan -out=tfplan
+
+      # 7️⃣ Aplicar Terraform
+      - name: Terraform Apply
+        run: terraform -chdir=terraform apply -auto-approve tfplan
+
+      # 8️⃣ Configurar kubectl para o cluster EKS
+      - name: Configure kubectl
+        run: |
+          aws eks --region us-east-1 update-kubeconfig --name my-eks-cluster
+
+      # 9️⃣ Aplicar Service ClusterIP
+      - name: Apply ClusterIP Service
+        run: |
+          kubectl apply -f k8s/service-api-cluster-ip.yml -n workshop
+
+      # 🔟 Mostrar outputs Terraform
+      - name: Terraform Outputs
+        run: terraform -chdir=terraform output
