@@ -33,8 +33,7 @@ module "oidc" {
   role_name = "github-actions-deploy"
 
   policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+    "arn:aws:iam::aws:policy/AdministratorAccess"
   ]
 
   github_subjects = [
