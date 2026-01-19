@@ -41,7 +41,7 @@ jobs:
 
       # 6️⃣ Terraform Plan (read-only)
       - name: Terraform Plan
-        run: terraform -chdir=terraform plan -out=tfplan -input=false -var-file="dev.tfvars"
+        run: terraform -chdir=terraform plan"
 
       # 7️⃣ Terraform Apply (full access)
       - name: Terraform Apply
