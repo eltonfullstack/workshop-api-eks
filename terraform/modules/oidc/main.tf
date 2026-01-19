@@ -53,33 +53,57 @@ resource "aws_iam_role_policy_attachment" "this" {
 }
 
 # Policy read-only para Plan
+# Policy read-only para Plan (ajustada)
 resource "aws_iam_policy" "readonly_for_github" {
   name        = "GitHubActionsReadOnly"
-  description = "Permissões de leitura mínima para Terraform Plan"
+  description = "Permissões necessárias para terraform plan"
 
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
-        Effect   = "Allow",
-        Action   = [
-          "iam:GetRole",
-          "iam:GetPolicy",
-          "iam:GetRolePolicy",
-          "iam:ListAttachedRolePolicies",
-          "iam:GetInstanceProfile",
-          "iam:GetOpenIDConnectProvider",
+        Effect = "Allow",
+        Action = [
+          # IAM
+          "iam:Get*",
+          "iam:List*",
+
+          # EC2 / VPC
           "ec2:Describe*",
-          "eks:DescribeCluster",
+
+          # EKS
+          "eks:Describe*",
+          "eks:List*",
+
+          # ELB / ALB
+          "elasticloadbalancing:Describe*",
+
+          # AutoScaling
+          "autoscaling:Describe*",
+
+          # CloudWatch
+          "cloudwatch:Get*",
+          "cloudwatch:List*",
+          "cloudwatch:Describe*",
+
+          # S3 (backend)
           "s3:GetObject",
           "s3:ListBucket",
-          "sts:AssumeRole"
+
+          # KMS (se backend usa SSE-KMS)
+          "kms:DescribeKey",
+          "kms:GetKeyPolicy",
+          "kms:GetKeyRotationStatus",
+
+          # STS
+          "sts:GetCallerIdentity"
         ],
-        Resource = ["*"]
+        Resource = "*"
       }
     ]
   })
 }
+
 
 resource "aws_iam_role_policy_attachment" "readonly_attach" {
   role       = aws_iam_role.this.name
