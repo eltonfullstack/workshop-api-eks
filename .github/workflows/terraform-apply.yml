@@ -1,10 +1,12 @@
-name: Terraform Destroy
+name: Terraform Apply
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-  terraform-destroy:
+  terraform:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +26,9 @@ jobs:
           terraform_version: 1.6.0
 
       - name: Terraform Init
-        run: terraform -chdir=terraform init
+        run: terraform -chdir=terraform init -input=false
 
-      - name: Terraform Destroy
-        run: terraform -chdir=terraform destroy -auto-approve
+      - name: Terraform Plan & Apply
+        run: |
+          terraform -chdir=terraform plan -out=tfplan -input=false
+          terraform -chdir=terraform apply -auto-approve tfplan
