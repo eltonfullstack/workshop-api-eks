@@ -1,9 +1,10 @@
-name: Provision EKS via Terraform
+name: Terraform EKS
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch: # permite rodar manualmente (para destroy)
 
 jobs:
   terraform:
@@ -28,12 +29,18 @@ jobs:
         with:
           terraform_version: 1.6.0
 
-      # 4️⃣ Inicializar Terraform com backend remoto
+      # 4️⃣ Inicializar Terraform
       - name: Terraform Init
         run: terraform -chdir=terraform init -input=false
 
-      - name: Terraform Plan
-        run: terraform -chdir=terraform plan -out=tfplan -input=false
-
-      - name: Terraform Apply
-        run: terraform -chdir=terraform apply -auto-approve tfplan
+      # 5️⃣ Decidir entre apply ou destroy
+      - name: Terraform Plan/Apply or Destroy
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "🚨 Destroy acionado manualmente"
+            terraform -chdir=terraform destroy -auto-approve -input=false
+          else
+            echo "✅ Plan e Apply no push"
+            terraform -chdir=terraform plan -out=tfplan -input=false
+            terraform -chdir=terraform apply -auto-approve tfplan
+          fi
