@@ -41,7 +41,7 @@ jobs:
 
       # 6️⃣ Gerar plano Terraform (não interativo)
       - name: Terraform Plan
-        run: terraform -chdir=terraform plan -out=tfplan -input=false
+        run: terraform -chdir=terraform -backend-config=dev.aws.tfbackend -input=false
 
       # 7️⃣ Aplicar Terraform (não interativo)
       - name: Terraform Apply
