@@ -5,57 +5,37 @@ on:
     branches:
       - main
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   terraform:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout
+      # 1️⃣ Pegar o código
       - name: Checkout
         uses: actions/checkout@v3
 
-      # 2️⃣ Configure AWS credentials (usar a role criada pelo Terraform)
+      # 2️⃣ Configurar credenciais AWS
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # 3️⃣ Setup Terraform
+      # 3️⃣ Instalar Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.6.0
 
-      # 4️⃣ Terraform Init
+      # 4️⃣ Inicializar Terraform com backend remoto
       - name: Terraform Init
-        run: terraform -chdir=terraform init -backend-config=dev.aws.tfbackend -input=false
+        run: terraform -chdir=terraform init -input=false
 
-      # 5️⃣ Terraform Validate
-      - name: Terraform Validate
-        run: terraform -chdir=terraform validate
-
-      # 6️⃣ Terraform Plan (read-only)
+      # 5️⃣ Gerar plano de execução
       - name: Terraform Plan
-        run: terraform -chdir=terraform plan
+        run: terraform -chdir=terraform plan -out=tfplan -input=false
 
-      # 7️⃣ Terraform Apply (full access)
+      # 6️⃣ Aplicar o plano
       - name: Terraform Apply
-        run: terraform -chdir=terraform apply -auto-approve -input=false tfplan
-
-      # 8️⃣ Configure kubectl
-      - name: Configure kubectl
-        run: |
-          aws eks --region us-east-1 update-kubeconfig --name workshop-cluster
-
-      # 9️⃣ Apply ClusterIP Service
-      - name: Apply ClusterIP Service
-        run: kubectl apply -f k8s/service-api-cluster-ip.yml -n workshop
-
-      # 🔟 Show Terraform Outputs
-      - name: Terraform Outputs
-        run: terraform -chdir=terraform output
+        run: terraform -chdir=terraform apply -auto-approve tfplan
