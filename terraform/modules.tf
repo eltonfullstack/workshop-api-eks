@@ -28,21 +28,3 @@ module "node" {
   max_size     = var.max_size
 }
 
-module "oidc" {
-  source    = "./modules/oidc"
-  role_name = "github-actions-deploy"
-
-  policy_arns = [
-    "arn:aws:iam::aws:policy/AdministratorAccess"
-  ]
-
-  github_subjects = [
-    "repo:eltonfullstack/workshop-api-eks:*"
-  ]
-}
-
-module "terraform_backend_s3" {
-  source      = "./modules/iam-backend-s3"
-  role_name  = "github-actions-deploy"
-  bucket_name = "workshop-api-eks"
-}
