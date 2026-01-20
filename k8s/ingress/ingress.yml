@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: workshop-api-ingress
-  namespace: workshop
+  name: auto-repair-shop-api-ingress
+  namespace: oficina
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
@@ -14,6 +14,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: workshop-api
+                name: auto-repair-shop-api
                 port:
                   number: 3000

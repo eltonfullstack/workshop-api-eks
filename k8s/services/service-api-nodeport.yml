@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: workshop-api
-  namespace: workshop
+  name: auto-repair-shop-api
+  namespace: oficina
 spec:
   type: NodePort
   selector:
-    app: workshop-api
+    app: auto-repair-shop-api
   ports:
     - name: http
       port: 3000

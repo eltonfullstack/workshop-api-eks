@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: workshop-api
-  namespace: workshop
+  name: auto-repair-shop-api
+  namespace: oficina
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: workshop-api
+      app: auto-repair-shop-api
   template:
     metadata:
       labels:
-        app: workshop-api
+        app: auto-repair-shop-api
     spec:
       containers:
-        - name: workshop-api
-          image: workshop-api:latest
+        - name: auto-repair-shop-api
+          image: auto-repair-shop-api:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 3000
@@ -30,25 +30,25 @@ spec:
             - name: NODE_ENV
               valueFrom:
                 configMapKeyRef:
-                  name: workshop-api-config
+                  name: auto-repair-shop-api-config
                   key: NODE_ENV
             - name: PORT
               valueFrom:
                 configMapKeyRef:
-                  name: workshop-api-config
+                  name: auto-repair-shop-api-config
                   key: PORT
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: workshop-api-secrets
+                  name: auto-repair-shop-api-secrets
                   key: DATABASE_URL
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: workshop-api-secrets
+                  name: auto-repair-shop-api-secrets
                   key: JWT_SECRET
             - name: JWT_REFRESH_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: workshop-api-secrets
+                  name: auto-repair-shop-api-secrets
                   key: JWT_REFRESH_SECRET

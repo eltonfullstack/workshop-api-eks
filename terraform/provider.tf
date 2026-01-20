@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "workshop-api-eks"
+    bucket = "oficina-api-eks-cluster"
     key    = "terraform.tfstate"
     region = "us-east-1"
     // dynamodb_table = "terraform-lock-table"    # (Opcional) tabela DynamoDB para lock

@@ -3,12 +3,12 @@ version: "3.8"
 services:
   postgres:
     image: postgres:latest
-    container_name: workshop-db
+    container_name: auto_repair_shop
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: workshop_db
+      POSTGRES_DB: auto_repair_shop
     ports:
       - "5432:5432"
     volumes:
@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: builder
-    container_name: workshop-api
+    container_name: auto-repair-shop-api
     ports:
       - "3000:3000"
     volumes:
@@ -32,7 +32,7 @@ services:
       - /app/node_modules
     environment:
       NODE_ENV: development
-      DATABASE_URL: postgres://postgres:postgres@postgres:5432/workshop_db
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/auto_repair_shop
       DATABASE_HOST: postgres
       JWT_SECRET: secretKey
       JWT_REFRESH_SECRET: refreshSecretKey

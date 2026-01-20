@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: workshop-api-config
-  namespace: workshop
+  name: auto-repair-shop-api-config
+  namespace: oficina
 data:
   NODE_ENV: development
   PORT: "3000"
