@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: workshop-api
-          image: 051826705770.dkr.ecr.us-east-1.amazonaws.com/auto-repair-shop:latest
-          imagePullPolicy: Always
+          image: workshop-api:latest
+          imagePullPolicy: Never
           ports:
             - containerPort: 3000
           resources:
@@ -27,7 +27,6 @@ spec:
               cpu: 200m
               memory: 512Mi
           env:
-            # Variáveis do ConfigMap
             - name: NODE_ENV
               valueFrom:
                 configMapKeyRef:
@@ -38,8 +37,6 @@ spec:
                 configMapKeyRef:
                   name: workshop-api-config
                   key: PORT
-
-            # Variáveis do Secret
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
@@ -55,5 +52,3 @@ spec:
                 secretKeyRef:
                   name: workshop-api-secrets
                   key: JWT_REFRESH_SECRET
-      imagePullSecrets:
-        - name: ecr-registry

@@ -9,4 +9,4 @@ spec:
     app: workshop-api
   ports:
     - port: 80
-      targetPort: 8080
+      targetPort: 3000
